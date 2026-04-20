@@ -1,31 +1,33 @@
 # Motorcycle helmet law repeals and fatality rates
 
-Causal question: does repealing a universal motorcycle helmet law increase motorcycle fatalities? We answer it with a difference-in-differences design over seven treated states (Arkansas 1997, Texas 1997, Kentucky 1998, Florida 2000, Pennsylvania 2003, Michigan 2012, Missouri 2020) against the rest of the country, 1995-2022.
+Causal question: does repealing a universal motorcycle helmet law increase motorcycle fatalities? We answer it with a difference-in-differences design over seven states that repealed their universal laws between 1997 and 2020 (Arkansas, Texas, Kentucky, Florida, Pennsylvania, Michigan, Missouri) against the rest of the country, 1995-2022.
 
 ## Data collection
 
+Four independent sources are needed because no single dataset contains both the numerator (motorcycle deaths) and the denominator (how many motorcycles or people are at risk) together with the treatment timing. The pipeline joins them into one state-year panel.
+
 ```mermaid
 flowchart LR
-    A[NHTSA FARS<br/>28 yearly zips]:::raw --> P[process.py]
-    B[FHWA MV-1<br/>28 Excel files]:::raw --> P
-    C[Census NST-EST<br/>4 decade files]:::raw --> P
-    D[helmet_law_repeals.csv<br/>7 treated states]:::raw --> P
-    P --> O[processed/<br/>state_year_panel.csv<br/>1,428 rows x 16 cols]:::out
+    A["<b>FARS</b><br/>US federal record of every<br/>fatal road crash since 1975<br/><i>provides: motorcycle deaths<br/>per state per year</i>"]:::raw --> M["merge on<br/>state + year"]
+    B["<b>FHWA MV-1</b><br/>Federal Highway Administration<br/>annual state motorcycle<br/>registration counts<br/><i>provides: primary denominator<br/>(exposure — bikes at risk)</i>"]:::raw --> M
+    C["<b>Census NST-EST</b><br/>US Census Bureau annual<br/>state population estimates<br/><i>provides: secondary denominator<br/>(robustness — deaths per capita)</i>"]:::raw --> M
+    D["<b>Policy table</b><br/>Hand-coded from GHSA / IIHS<br/>which states repealed their<br/>universal helmet law and when<br/><i>provides: treatment indicator</i>"]:::raw --> M
+    M --> O["<b>state_year_panel.csv</b><br/>one row per state per year<br/>with fatality rates and<br/>treatment variables"]:::out
     classDef raw fill:#eef,stroke:#557
     classDef out fill:#efe,stroke:#575
 ```
 
-FARS gives motorcycle-occupant fatalities. FHWA MV-1 gives registered motorcycles per state-year (primary denominator). Census NST-EST gives state population (robustness denominator). The policy CSV encodes the treatment dates. `process.py` joins them into one state-year panel.
-
 ## How the panel supports the causal question
+
+Difference-in-differences asks: *did fatality rates in repeal states change more after the repeal than fatality rates in non-repeal states over the same years?* If yes, the extra change is the causal effect of the repeal. The panel is structured so this comparison is a direct computation.
 
 ```mermaid
 flowchart LR
-    panel[state_year_panel.csv<br/>51 states x 28 years]:::p --> treat[7 treated states<br/>repeal 1997-2020]:::t
-    panel --> ctrl[44 control states]:::c
-    treat --> did{Diff-in-diff<br/>+ event study}
+    panel["<b>state-year panel</b><br/>50 states + DC<br/>x 28 years<br/>(1995-2022)"]:::p --> treat["<b>7 treated states</b><br/>repealed universal<br/>helmet laws, 1997-2020"]:::t
+    panel --> ctrl["<b>44 control states</b><br/>kept universal helmet<br/>laws unchanged"]:::c
+    treat --> did{"<b>diff-in-diff<br/>+ event study</b><br/>compare fatality rate<br/>change across groups<br/>before vs. after repeal"}
     ctrl --> did
-    did --> effect[Effect on<br/>fatality rate per 10k<br/>registered motorcycles]:::e
+    did --> effect["<b>causal estimate</b><br/>of how repeal affects<br/>motorcycle fatality rate"]:::e
     classDef p fill:#efe,stroke:#575
     classDef t fill:#fee,stroke:#755
     classDef c fill:#eef,stroke:#557
@@ -39,8 +41,10 @@ cd data
 python process.py
 ```
 
-Reads everything from `data/raw/`, writes `data/processed/state_year_panel.csv`. No network calls, no manual steps.
+Reads `data/raw/`, writes `data/processed/state_year_panel.csv`. No network calls, no manual steps.
 
 ## More
 
-Data-layer details (sources, formats, column schema, known issues): see [data/README.md](data/README.md).
+- **Data dictionary** (every column in the processed panel, with type, source, and definition): [data/processed/schema.md](data/processed/schema.md)
+- **Raw-data inventory** (what's in `raw/` by folder, source URLs, format quirks): [data/README.md](data/README.md)
+- **EDA notebook** (how the cleaning decisions were reached, with validation against NHTSA's published totals): [data/eda.ipynb](data/eda.ipynb)
