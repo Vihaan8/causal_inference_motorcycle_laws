@@ -1,0 +1,7 @@
+data/raw/*
+!data/raw/helmet_law_repeals.csv
+
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.DS_Store
