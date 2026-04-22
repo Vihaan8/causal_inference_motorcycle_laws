@@ -1,6 +1,6 @@
 # Motorcycle helmet law repeals and fatality rates
 
-Causal question: does repealing a universal motorcycle helmet law increase motorcycle fatalities? We answer it with a difference-in-differences design over seven states that repealed their universal laws between 1997 and 2020 (Arkansas, Texas, Kentucky, Florida, Pennsylvania, Michigan, Missouri) against the rest of the country, 1995-2022.
+Causal question: does repealing a universal motorcycle helmet law increase motorcycle fatalities? We answer it with a difference-in-differences design over seven states that repealed their universal laws between 1997 and 2020 (Arkansas, Texas, Kentucky, Florida, Pennsylvania, Michigan, Missouri) against the rest of the country, 1995-2022. Missouri is in the panel but excluded from estimation (2020 repeal leaves too few post-period years; see `models/README.md` §4), so the DiD models are fit on six treated states vs. 44 controls.
 
 ## Data collection
 
@@ -23,7 +23,7 @@ Difference-in-differences asks: *did fatality rates in repeal states change more
 
 ```mermaid
 flowchart LR
-    panel["<b>state-year panel</b><br/>50 states + DC<br/>x 28 years<br/>(1995-2022)"]:::p --> treat["<b>7 treated states</b><br/>repealed universal<br/>helmet laws, 1997-2020"]:::t
+    panel["<b>state-year panel</b><br/>50 states + DC<br/>x 28 years<br/>(1995-2022)"]:::p --> treat["<b>6 treated states</b><br/>repealed universal<br/>helmet laws, 1997-2012<br/><i>(Missouri 2020 dropped —<br/>too few post years)</i>"]:::t
     panel --> ctrl["<b>44 control states</b><br/>kept universal helmet<br/>laws unchanged"]:::c
     treat --> did{"<b>diff-in-diff<br/>+ event study</b><br/>compare fatality rate<br/>change across groups<br/>before vs. after repeal"}
     ctrl --> did

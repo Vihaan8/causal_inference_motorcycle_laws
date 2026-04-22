@@ -16,8 +16,7 @@ exposure measure for the policy question. As a robustness check we also use
 which avoids reliance on motorcycle registration data entirely.
 
 ### 2. Treatment Definition
-The treatment group includes the seven states that repealed a universal helmet
-law during the study window:
+Seven states repealed a universal helmet law during the study window:
 
 - Arkansas (1997)
 - Texas (1997)
@@ -25,7 +24,9 @@ law during the study window:
 - Florida (2000)
 - Pennsylvania (2003)
 - Michigan (2012)
-- Missouri (2020)
+- Missouri (2020) — *excluded from estimation (see Section 4)*
+
+The treatment group used in the models is therefore six states.
 
 For the DiD model:
 
@@ -66,7 +67,16 @@ counts:
 Inspection of these rows reveals implausibly high fatality rates — for example,
 Colorado 2002 shows 654 fatalities per 10,000 motorcycles, which is not
 physically possible. Because these rows would distort the registration-based
-fatality rate, the main specification excludes them, leaving 1,424 observations.
+fatality rate, the main specification excludes them.
+
+We also exclude Missouri entirely. Its repeal took effect in 2020, so only
+three post-period years (2020–2022) are observed, which is too few to
+identify a repeal effect. Missouri's exemption age is also 26 rather than
+21, so it does not match the under-21 / over-21 split used in the age-group
+analysis. Dropping Missouri removes 28 state-years.
+
+After both exclusions, the estimation sample is 1,396 observations
+(1,428 − 4 flagged rows − 28 Missouri rows).
 
 ### 5. Robustness Checks
 We estimate three specifications in total:
@@ -103,8 +113,8 @@ still are. This creates a second difference-in-differences:
 ## Results Interpretation
 
 ### Descriptive Results
-Pre-period summary statistics show that repeal and control states had nearly
-identical fatality rates before any repeal occurred (6.85 vs. 6.71 per 10,000
+Pre-period summary statistics show that repeal and control states had broadly
+similar fatality rates before any repeal occurred (6.18 vs. 6.71 per 10,000
 registered motorcycles), supporting the comparability of the two groups.
 
 ### Parallel Trends
@@ -112,8 +122,8 @@ The event study plot shows pre-period coefficients clustered near zero with
 confidence intervals that all cross zero. The joint F-test confirms this
 formally:
 
-- **F-statistic:** 1.23
-- **p-value:** 0.31
+- **F-statistic:** 1.02
+- **p-value:** 0.42
 
 We fail to reject the null hypothesis of parallel trends, supporting the
 validity of the DiD design.
@@ -121,34 +131,38 @@ validity of the DiD design.
 ### Main DiD Result
 In the baseline DiD model, the estimated repeal effect is:
 
-- **Coefficient:** 1.6129
-- **Standard error:** 0.7647
-- **p-value:** 0.0349
-- **95% CI:** [0.114, 3.112]
+- **Coefficient:** 1.4389
+- **Standard error:** 0.8180
+- **p-value:** 0.0786
+- **95% CI:** [-0.164, 3.042]
 
 Repealing a universal motorcycle helmet law is associated with an increase of
-about **1.61 motorcycle fatalities per 10,000 registered motorcycles** per year,
+about **1.44 motorcycle fatalities per 10,000 registered motorcycles** per year,
 relative to the change observed in non-repeal states over the same period.
-This represents a **23.6% increase** over the pre-repeal baseline fatality rate
-of 6.85. The result is statistically significant at the 5% level.
+This represents a **23.3% increase** over the pre-repeal baseline fatality rate
+of 6.18. The result is marginally significant (p≈0.08) — the 95% CI narrowly
+includes zero once Missouri is excluded, though the point estimate is similar
+in magnitude to the population-based robustness check in Model 3 (which is
+significant at the 1% level).
 
 ### Robustness Results
 
 **Model 2 (+ log population):**
-- **Coefficient:** 1.5349  
-- **p-value:** 0.0296
+- **Coefficient:** 1.3680
+- **p-value:** 0.0714
 
 Adding log(population) as a covariate leaves the coefficient nearly unchanged,
 indicating that differential population growth across states is not driving
 the result.
 
 **Model 3 (per 100k population):**
-- **Coefficient:** 0.3778  
-- **p-value:** 0.0028
+- **Coefficient:** 0.3511
+- **p-value:** 0.0082
 
 Using a completely different outcome measure leads to the same substantive
-conclusion. The smaller magnitude reflects the larger denominator — total
-population rather than registered motorcycles — not a smaller effect.
+conclusion, and here the effect is statistically significant at the 1% level.
+The smaller magnitude reflects the larger denominator — total population
+rather than registered motorcycles — not a smaller effect.
 
 ### Event Study Result
 Pre-period coefficients are all statistically indistinguishable from zero,
@@ -175,10 +189,12 @@ causal test.
 
 The main empirical finding is that repealing a universal motorcycle helmet law
 is associated with **higher motorcycle fatality rates**. The baseline
-difference-in-differences model estimates an increase of about **1.61 fatalities
-per 10,000 registered motorcycles** — a 23.6% increase over the pre-repeal
-baseline. This conclusion is supported by a population-based robustness check,
-a covariate-adjusted specification, and an event study that validates the
+difference-in-differences model estimates an increase of about **1.44 fatalities
+per 10,000 registered motorcycles** (p≈0.08) — a 23.3% increase over the
+pre-repeal baseline. The population-based robustness check (Model 3) is
+statistically significant at the 1% level (0.35 extra fatalities per 100k
+residents, p=0.008), and the covariate-adjusted specification gives a nearly
+identical point estimate to the baseline. The event study validates the
 parallel trends assumption. The age-group comparison provides suggestive
 mechanistic evidence but should be interpreted with caution due to pre-existing
 demographic trends in the over-21 rider population.
