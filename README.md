@@ -34,6 +34,12 @@ flowchart LR
     classDef e fill:#ffe,stroke:#775
 ```
 
+## Findings
+
+Partial repeal raises motorcycle fatalities by about 23%. Baseline DiD: **+1.44 deaths per 10,000 registered motorcycles** per year (p≈0.08, against a 6.18 pre-repeal baseline). Robustness specifications agree — adding log(population) barely moves the estimate (1.37), and switching the denominator to state residents (cleaner, since registration counts are noisy) gives **+0.35 per 100,000 residents** (p<0.01).
+
+Pre-repeal trends are statistically indistinguishable across the two groups (binned event study F=0.74, p=0.53), so the post-repeal divergence is not the continuation of a pre-existing gap. The increase concentrates in the over-21 riders that partial repeals exempt: a triple-difference against under-21 riders yields **+1.59 per 10,000** (p<0.001), and the effect grows with time-since-repeal (0.91 in years 0–3, 1.52 in year 4+).
+
 ## Reproduce
 
 ```
@@ -45,6 +51,8 @@ Reads `data/raw/`, writes `data/processed/state_year_panel.csv`. No network call
 
 ## More
 
+- **Final report** (the writeup these findings appear in): [IDS 701 Final Report_submission.pdf](IDS%20701%20Final%20Report_submission.pdf)
+- **Modeling notebook and writeup** (every specification, parallel-trends test, and event study): [models/did.ipynb](models/did.ipynb), [models/README.md](models/README.md)
 - **Data dictionary** (every column in the processed panel, with type, source, and definition): [data/processed/schema.md](data/processed/schema.md)
 - **Raw-data inventory** (what's in `raw/` by folder, source URLs, format quirks): [data/README.md](data/README.md)
 - **EDA notebook** (how the cleaning decisions were reached, with validation against NHTSA's published totals): [data/eda.ipynb](data/eda.ipynb)
